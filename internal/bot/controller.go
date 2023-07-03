@@ -35,7 +35,7 @@ func (b *Bot) handleCommand(update tgbotapi.Update) {
 		response = messages.SENDDATA
 		b.userStatus[update.Message.Chat.ID] = 1
 		b.sendMessage(response, update)
-		
+
 	case messages.DELETESITECOMMAND:
 		response = messages.SENDDATA
 		b.userStatus[update.Message.Chat.ID] = 2
@@ -45,6 +45,8 @@ func (b *Bot) handleCommand(update tgbotapi.Update) {
 	case messages.HELPCOMMAND:
 		b.sendMessage(messages.HELP, update)
 
+	case messages.REGISTERCOMMAND:
+		b.sendMessage(b.SaveUser(update.Message.Chat.ID), update)
 	default:
 		b.sendMessage(messages.HELP, update)
 		b.userStatus[update.Message.Chat.ID] = 0
@@ -64,6 +66,7 @@ func (b *Bot) handleMessage(update tgbotapi.Update) {
 		return
 	}
 
+	// if userStatus == 1 we need to delete url
 	if b.userStatus[update.Message.Chat.ID] == 2 {
 		response = b.deleteUrl(update.Message.Chat.ID, update.Message.Text)
 		b.userStatus[update.Message.Chat.ID] = 0

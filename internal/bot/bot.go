@@ -23,8 +23,9 @@ type Api interface {
 }
 
 type StorageMicroservice interface {
-	Save(chatID int64, site string) string
-	Delete(chatID int64, site string) string
+	SaveUrl(chatID int64, site string) string
+	SaveUser(chatID int64, token string) string
+	DeleteUrl(chatID int64, site string) string
 	Get(chatID int64) []string
 }
 

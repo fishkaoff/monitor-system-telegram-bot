@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/fishkaoff/telegram-client/proto"
+	"github.com/fishkaoff/monitor-system-proto-files/proto"
 	"google.golang.org/grpc"
 )
 
@@ -27,8 +27,8 @@ func NewGRPCStruct(svc proto.StorageClient, ctx context.Context) *GRPCStruct {
 	return &GRPCStruct{svc: svc, ctx: ctx}
 }
 
-func (gc *GRPCStruct) Save(chatID int64, site string) string {
-	resp, err := gc.svc.Save(gc.ctx, &proto.SaveRequest{ChatID: chatID})
+func (gc *GRPCStruct) SaveUrl(chatID int64, site string) string {
+	resp, err := gc.svc.SaveUrl(gc.ctx, &proto.SaveUrlRequest{ChatID: chatID})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,8 +36,8 @@ func (gc *GRPCStruct) Save(chatID int64, site string) string {
 	return resp.Message
 }
 
-func (gc *GRPCStruct) Delete(chatID int64, site string) string {
-	resp, err := gc.svc.Delete(gc.ctx, &proto.DeleteRequest{ChatID: chatID, Site: site})
+func (gc *GRPCStruct) DeleteUrl(chatID int64, site string) string {
+	resp, err := gc.svc.DeleteUrl(gc.ctx, &proto.DeleteUrlRequest{ChatID: chatID, Site: site})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,7 +46,17 @@ func (gc *GRPCStruct) Delete(chatID int64, site string) string {
 }
 
 func (gc *GRPCStruct) Get(chatID int64) []string {
-	resp, err := gc.svc.Get(gc.ctx, &proto.GetRequest{ChatID: chatID})
+	resp, err := gc.svc.GetUrl(gc.ctx, &proto.GetUrlRequest{ChatID: chatID})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return resp.Message
+}
+
+
+func (gc *GRPCStruct) SaveUser(chatID int64, token string) string {
+	resp, err := gc.svc.SaveUser(gc.ctx, &proto.SaveUserRequest{ChatID: chatID, Token: token})
 	if err != nil {
 		log.Fatal(err)
 	}

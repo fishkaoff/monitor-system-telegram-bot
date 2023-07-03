@@ -2,6 +2,8 @@ package bot
 
 import (
 	"bytes"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 
@@ -27,7 +29,7 @@ func (b *Bot) addUrl(chatID int64, url string) string {
 	}
 
 	// add url to db
-	resp := b.storageMicro.Save(chatID, url)
+	resp := b.storageMicro.SaveUrl(chatID, url)
 
 	return resp
 }
@@ -41,7 +43,7 @@ func (b *Bot) deleteUrl(chatID int64, url string) string {
 	}
 
 	// query to database for delete url
-	resp := b.storageMicro.Delete(chatID, url)
+	resp := b.storageMicro.DeleteUrl(chatID, url)
 
 	return resp
 }
@@ -102,4 +104,20 @@ func (b *Bot) renderResponse(unRenderedResponse []models.ResponseRow) string {
 	}
 
 	return renderedResponse
+}
+
+
+func (b *Bot) SaveUser(chatID int64) string {
+	token := GenerateSecureToken()
+
+	return b.storageMicro.SaveUser(chatID, token)
+}
+
+
+func GenerateSecureToken() string {
+    b := make([]byte, 16)
+    if _, err := rand.Read(b); err != nil {
+        return ""
+    }
+    return hex.EncodeToString(b)
 }
